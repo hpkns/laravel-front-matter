@@ -43,7 +43,7 @@ class Parser {
         {
             // If the regexp fails (i.e. if there is no front matter header present)
             // we just return an array with the content as the only key
-            $parsed['content'] = $this->raw;
+            $parsed['content'] = $fm;
         }
 
         $parsed = $this->fillDefault($parsed, $default);
