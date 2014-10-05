@@ -1,6 +1,7 @@
 <?php namespace Hpkns\LaravelFrontMatter;
 
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Yaml\Parser as Yaml;
 
 class LaravelFrontMatterServiceProvider extends ServiceProvider {
 
@@ -9,7 +10,7 @@ class LaravelFrontMatterServiceProvider extends ServiceProvider {
 	 *
 	 * @var bool
 	 */
-	protected $defer = false;
+	protected $defer = true;
 
 	/**
 	 * Register the service provider.
@@ -18,7 +19,9 @@ class LaravelFrontMatterServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+        $this->app->bindShared('front-matter', function(){
+            return new Parser(new Yaml);
+        });
 	}
 
 	/**
@@ -28,7 +31,7 @@ class LaravelFrontMatterServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return ['front-matter'];
 	}
 
 }

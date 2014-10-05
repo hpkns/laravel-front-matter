@@ -1,86 +1,78 @@
 <?php namespace Hpkns\FrontMatter;
 
 use Symfony\Component\Yaml\Parser as Yaml;
-use Symfony\Component\Yaml\Exception\ParseException;
 
 class Parser {
 
     /**
-     * Contains the raw text to be parsed
+     * A yaml parser instance
      *
-     * @var string
-     */
-    protected $raw;
-    /**
-     * A YAML parser instance
-     *
-     * @var \Symfony\Component\Yaml\Parser $yaml
+     * @var \Symfony\Component\Yaml\Parser
      */
     protected $yaml;
 
     /**
-     * The parsed data extracted from the ff
-     *
-     * @var array
-     */
-    protected $parsed = [];
-
-    /**
      * Initialise the instance
      *
-     * @param  string $raw
-     * @param  \Symfony\Component\Yaml\Parser $yaml
+     * @param  \Symfony\Component\Yaml\Parser
      * @return void
      */
-    public function __construct($raw, Yaml $yaml = null)
+    public function __construct(Yaml $yaml = null)
     {
-        $this->raw = $raw;
         $this->yaml = $yaml ?: new Yaml;
-
-        $this->parse();
     }
-
     /**
-     * Parse a file and return an array
+     * Parse a front matter file and return an array with its content
      *
-     * @return string
+     * @param  string $fm
+     * @param  array  $default
+     * @return array
      */
-    protected function parse()
+    public function parse($fm, array $default = [], $castObject = false)
     {
         $pieces = [];
+        $parsed = [];
         $regexp = '/^-{3}(?:\n|\r)(.+?)-{3}(.*)$/ms';
 
-        if(preg_match($regexp, $this->raw, $pieces) && $yaml = $pieces[1])
+        if(preg_match($regexp, $fm, $pieces) && $yaml = $pieces[1])
         {
-            $this->parsed = $this->yaml->parse($yaml);
-            $this->parsed['content'] = trim($pieces[2]);
-
-            return;
+            $parsed = $this->yaml->parse($yaml, true);
+            $parsed['content'] = trim($pieces[2]);
         }
-        $this->parsed['content'] = $this->raw;
+        else
+        {
+            // If the regexp fails (i.e. if there is no front matter header present)
+            // we just return an array with the content as the only key
+            $parsed['content'] = $this->raw;
+        }
+
+        $parsed = $this->fillDefault($parsed, $default);
+
+        if($castObject)
+        {
+            return (object)$parsed;
+        }
+
+        return $parsed;
     }
 
     /**
-     * Dynamicaly return the parsed elements
+     * Add default value to key that are not defined in the front matter
      *
-     * @param  string $key
-     * @return mixed
+     * @param  array $parsed
+     * @param  array $default
+     * @return array
      */
-    public function __get($key)
+    protected function fillDefault(array $parsed, array $default = [])
     {
-        if(isset($this->parsed[$key]))
+        foreach($default as $key => $value)
         {
-            return $this->parsed[$key];
+            if( ! isset($parsed[$key]))
+            {
+                $parsed[$key] = $value;
+            }
         }
-    }
 
-    /**
-     * Return the content
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->parsed['content'];
+        return $parsed;
     }
 }
