@@ -39,6 +39,7 @@ class Parser {
             $parsed = $this->yaml->parse($yaml, true);
             if(is_array($parsed))
             {
+                $parsed['content'] = trim($pieces[2]);
                 return $this->fillDefault($parsed, $default);
             }
         }

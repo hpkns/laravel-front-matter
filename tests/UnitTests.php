@@ -39,13 +39,6 @@ EOL;
         $this->assertEquals($default, $r['default']);
     }
 
-    public function testCastToObject()
-    {
-        $r = $this->p->parse('test', [], true);
-
-        $this->assertInstanceOf('stdClass', $r);
-    }
-
     /**
      * @expectedException \Symfony\Component\Yaml\Exception\ParseException
      */
@@ -58,5 +51,13 @@ EOL;
 (hopefully)
 EOL;
         $this->p->parse($badly_formatted);
+    }
+
+    /**
+     * @expectedException Hpkns\FrontMatter\Exceptions\FrontMatterHeaderNotFoundException
+     */
+    public function testThrowsExceptionWhenFMHeaderIsAbsent()
+    {
+        $this->p->parse('');
     }
 }
