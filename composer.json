@@ -1,5 +1,5 @@
 {
-    "name": "hpkns/laravel-front-matter",
+    "name": "hpkns/front-matter",
     "description": "A simple utility package to read Jekyll Front Matter files",
     "license": "MIT",
     "keywords": ["framework", "laravel"],
