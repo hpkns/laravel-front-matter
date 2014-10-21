@@ -28,7 +28,7 @@ class Parser {
      * @param  array  $default
      * @return array
      */
-    public function parse($fm, array $default = [], $castObject = false)
+    public function parse($fm, array $default = [])
     {
         $pieces = [];
         $parsed = [];
@@ -37,23 +37,15 @@ class Parser {
         if(preg_match($regexp, $fm, $pieces) && $yaml = $pieces[1])
         {
             $parsed = $this->yaml->parse($yaml, true);
-            $parsed['content'] = trim($pieces[2]);
-        }
-        else
-        {
-            // If the regexp fails (i.e. if there is no front matter header present)
-            // we just return an array with the content as the only key
-            $parsed['content'] = $fm;
-        }
 
-        $parsed = $this->fillDefault($parsed, $default);
-
-        if($castObject)
-        {
-            return (object)$parsed;
+            if(is_array($parsed))
+            {
+                $parsed['content'] = trim($pieces[2]);
+                return $this->fillDefault($parsed, $default);
+            }
         }
 
-        return $parsed;
+        throw new Exceptions\FrontMatterHeaderNotFoundException('Parser failed to find a proper Front Matter header');
     }
 
     /**
