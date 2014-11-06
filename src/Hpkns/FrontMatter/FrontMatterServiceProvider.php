@@ -1,4 +1,4 @@
-<?php namespace Hpkns\LaravelFrontMatter;
+<?php namespace Hpkns\FrontMatter;
 
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Yaml\Parser as Yaml;
