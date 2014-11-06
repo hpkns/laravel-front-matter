@@ -15,8 +15,8 @@
         "illuminate/support": "4.2.*"
     },
     "autoload": {
-        "psr-0": {
-            "Hpkns\\FrontMatter": "src/"
+        "psr-4": {
+            "Hpkns\\FrontMatter\\": "src/Hpkns/FrontMatter"
         }
     },
     "minimum-stability": "stable"

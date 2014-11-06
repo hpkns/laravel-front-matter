@@ -3,7 +3,7 @@
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Yaml\Parser as Yaml;
 
-class LaravelFrontMatterServiceProvider extends ServiceProvider {
+class FrontMatterServiceProvider extends ServiceProvider {
 
 	/**
 	 * Indicates if loading of the provider is deferred.
