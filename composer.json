@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "symfony/yaml": "2.5.*",
+        "symfony/yaml": "~2.6",
         "php": ">=5.4.0",
         "illuminate/support": "~5.0"
     },
