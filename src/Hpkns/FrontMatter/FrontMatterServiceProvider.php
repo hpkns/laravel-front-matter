@@ -19,9 +19,7 @@ class FrontMatterServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-        $this->app->bindShared('front-matter', function(){
-            return new Parser(new Yaml);
-        });
+        $this->app->singleton('front-matter', Parser::class);
 	}
 
 	/**

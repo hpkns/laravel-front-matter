@@ -5,14 +5,14 @@ use Symfony\Component\Yaml\Parser as Yaml;
 class Parser {
 
     /**
-     * A yaml parser instance
+     * A yaml parser instance.
      *
      * @var \Symfony\Component\Yaml\Parser
      */
     protected $yaml;
 
     /**
-     * Initialise the instance
+     * Initialise the instance.
      *
      * @param  \Symfony\Component\Yaml\Parser
      * @return void
@@ -21,8 +21,9 @@ class Parser {
     {
         $this->yaml = $yaml ?: new Yaml;
     }
+
     /**
-     * Parse a front matter file and return an array with its content
+     * Parse a front matter file and return an array with its content.
      *
      * @param  string $fm
      * @param  array  $default
@@ -30,9 +31,8 @@ class Parser {
      */
     public function parse($fm, array $default = [])
     {
-        $pieces = [];
-        $parsed = [];
-        $regexp = '/^-{3}(?:\n|\r)(.+?)-{3}(.*)$/ms';
+        $pieces = $parsed = [];
+        $regexp = '/^---(?:\n|\r)(.+?)---(.*)$/ms';
 
         if(preg_match($regexp, $fm, $pieces) && $yaml = $pieces[1])
         {
@@ -41,30 +41,11 @@ class Parser {
             if(is_array($parsed))
             {
                 $parsed['content'] = trim($pieces[2]);
-                return $this->fillDefault($parsed, $default);
+
+                return array_merge($default, $parsed);
             }
         }
 
         throw new Exceptions\FrontMatterHeaderNotFoundException('Parser failed to find a proper Front Matter header');
-    }
-
-    /**
-     * Add default value to key that are not defined in the front matter
-     *
-     * @param  array $parsed
-     * @param  array $default
-     * @return array
-     */
-    protected function fillDefault(array $parsed, array $default = [])
-    {
-        foreach($default as $key => $value)
-        {
-            if( ! isset($parsed[$key]))
-            {
-                $parsed[$key] = $value;
-            }
-        }
-
-        return $parsed;
     }
 }
